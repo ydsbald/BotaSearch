@@ -1,0 +1,5 @@
+{
+  "name": "BotaSearch",
+  "description": "Identification botanique de la flore vasculaire de Madagascar par recherche libre.",
+  "requestFramePermissions": []
+}

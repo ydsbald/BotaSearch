@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Mono", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Crimson Pro", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --color-bg: #050604;
+  --color-bg2: rgba(15, 18, 12, 0.6);
+  --color-bg3: rgba(25, 30, 20, 0.8);
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border2: rgba(126, 179, 86, 0.2);
+  --color-green: #7eb356;
+  --color-green2: #a8d470;
+  --color-green3: #c8e89a;
+  --color-amber: #c4922a;
+  --color-amber2: #e8b84a;
+  --color-red: #c45a3a;
+  --color-muted: #5a6650;
+  --color-muted2: #7a8870;
+  --color-text: #e2e8db;
+  --color-text2: #a8b498;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-text font-sans antialiased selection:bg-green/30 selection:text-green3;
+  }
+  
+  /* Atmospheric Scanline effect */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.1) 2px,
+      rgba(0,0,0,0.1) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.7;
+  }
+
+  /* Custom Scrollbar for a premium feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(126, 179, 86, 0.2);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(126, 179, 86, 0.5);
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-bg2 backdrop-blur-xl border border-border shadow-2xl;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 20px rgba(126, 179, 86, 0.4);
+  }
+  
+  .text-glow-amber {
+    text-shadow: 0 0 20px rgba(232, 184, 74, 0.4);
+  }
+
+  .markdown-body {
+    @apply text-[13px] leading-relaxed;
+  }
+  .markdown-body p {
+    @apply mb-2 last:mb-0;
+  }
+  .markdown-body strong {
+    @apply font-bold text-green3;
+  }
+  .markdown-body em {
+    @apply italic text-amber2;
+  }
+  .markdown-body ul {
+    @apply list-disc pl-4 mb-2 space-y-1;
+  }
+  .markdown-body ol {
+    @apply list-decimal pl-4 mb-2 space-y-1;
+  }
+  .markdown-body li {
+    @apply mb-1;
+  }
+  .markdown-body a {
+    @apply text-green2 underline underline-offset-2 hover:text-green3 transition-colors;
+  }
+  .markdown-body code {
+    @apply bg-black/40 px-1.5 py-0.5 rounded text-amber2 font-mono text-[11px];
+  }
+  .markdown-body pre {
+    @apply bg-black/60 p-3 rounded-lg overflow-x-auto mb-2 border border-white/10;
+  }
+  .markdown-body pre code {
+    @apply bg-transparent p-0 text-text2;
+  }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    @apply font-bold text-green2 mt-3 mb-2;
+  }
+  .markdown-body h1 { @apply text-base; }
+  .markdown-body h2 { @apply text-[14px]; }
+  .markdown-body h3 { @apply text-[13px]; }
+  .markdown-body blockquote {
+    @apply border-l-2 border-green/50 pl-3 italic text-muted2 my-2;
+  }
+  .markdown-body table {
+    @apply w-full border-collapse mb-2 text-[11px];
+  }
+  .markdown-body th, .markdown-body td {
+    @apply border border-white/10 px-2 py-1 text-left;
+  }
+  .markdown-body th {
+    @apply bg-black/40 font-bold text-green2;
+  }
+}
+
