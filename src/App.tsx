@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Menu, Search, Sparkles, Sun, Moon, Settings } from 'lucide-react';
+import { X, Menu, Search, Sparkles, Sun, Moon, Settings, WifiOff } from 'lucide-react';
 import { search, getSuggestions, tokenize } from './search';
 import { ResultCard } from './components/ResultCard';
 import { Chatbot } from './components/Chatbot';
 import { SettingsModal } from './components/SettingsModal';
+import { ReloadPrompt } from './components/ReloadPrompt';
 import { cn } from './lib/utils';
 
 const FILTERS = [
@@ -47,6 +48,18 @@ export default function App() {
   const [selectedModel, setSelectedModel] = useState(() => {
     return localStorage.getItem('botasearch_model') || 'gemini-3-flash-preview';
   });
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('botasearch_model', selectedModel);
@@ -108,6 +121,12 @@ export default function App() {
           Flore vasculaire de Madagascar
         </div>
         <div className="ml-auto flex items-center gap-4">
+          {isOffline && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 border border-red-500/20 text-red-500 rounded-full text-[10px] font-bold uppercase tracking-widest" title="Mode hors-ligne">
+              <WifiOff className="w-3 h-3" />
+              <span className="hidden sm:inline">Hors-ligne</span>
+            </div>
+          )}
           <div className="text-[10px] text-muted tracking-widest hidden sm:block uppercase">
             v1.0 · ≥80 familles · Schatz-inspired
           </div>
