@@ -15,7 +15,20 @@ export function SettingsModal({ isOpen, onClose, selectedModel, onModelChange }:
     if (w.aistudio && w.aistudio.openSelectKey) {
       await w.aistudio.openSelectKey();
     } else {
-      alert("La sélection de clé API via l'interface n'est pas disponible en local.\n\nPour utiliser l'application localement, veuillez créer un fichier .env à la racine du projet et y ajouter votre clé :\nVITE_GEMINI_API_KEY=votre_cle_api");
+      const currentKey = localStorage.getItem('botasearch_api_key') || '';
+      const newKey = window.prompt(
+        "Configuration locale de la clé API Gemini :\n\nEntrez votre clé API (laissez vide pour utiliser le fichier .env) :",
+        currentKey
+      );
+      if (newKey !== null) {
+        if (newKey.trim() === '') {
+          localStorage.removeItem('botasearch_api_key');
+          alert("Clé API locale effacée. L'application utilisera le fichier .env si disponible.");
+        } else {
+          localStorage.setItem('botasearch_api_key', newKey.trim());
+          alert("Clé API enregistrée localement avec succès !");
+        }
+      }
     }
   };
 

@@ -33,6 +33,9 @@ export function Chatbot({ selectedModel = 'gemini-3-flash-preview' }: { selected
 
     try {
       const getApiKey = () => {
+        const localKey = localStorage.getItem('botasearch_api_key');
+        if (localKey) return localKey;
+
         if (typeof process !== 'undefined' && process.env) {
           if (process.env.API_KEY) return process.env.API_KEY;
           if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
@@ -45,7 +48,7 @@ export function Chatbot({ selectedModel = 'gemini-3-flash-preview' }: { selected
 
       const apiKey = getApiKey();
       if (!apiKey) {
-        throw new Error("Clé API introuvable. Veuillez configurer VITE_GEMINI_API_KEY dans votre fichier .env local.");
+        throw new Error("Clé API introuvable. Veuillez configurer la clé dans les paramètres ou via le fichier .env local.");
       }
 
       const currentAi = new GoogleGenAI({ apiKey });
