@@ -32,7 +32,23 @@ export function Chatbot({ selectedModel = 'gemini-3-flash-preview' }: { selected
     setIsLoading(true);
 
     try {
-      const currentAi = new GoogleGenAI({ apiKey: (process.env.API_KEY || process.env.GEMINI_API_KEY) as string });
+      const getApiKey = () => {
+        if (typeof process !== 'undefined' && process.env) {
+          if (process.env.API_KEY) return process.env.API_KEY;
+          if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
+        }
+        if (typeof import.meta !== 'undefined' && import.meta.env) {
+          if (import.meta.env.VITE_GEMINI_API_KEY) return import.meta.env.VITE_GEMINI_API_KEY;
+        }
+        return '';
+      };
+
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        throw new Error("Clé API introuvable. Veuillez configurer VITE_GEMINI_API_KEY dans votre fichier .env local.");
+      }
+
+      const currentAi = new GoogleGenAI({ apiKey });
       
       const contents = messages
         .filter((m, i) => !(i === 0 && m.role === 'model')) // Remove initial greeting
@@ -53,9 +69,12 @@ export function Chatbot({ selectedModel = 'gemini-3-flash-preview' }: { selected
       });
       
       setMessages(prev => [...prev, { role: 'model', text: response.text || '' }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chat error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "Désolé, une erreur s'est produite lors de la communication avec l'assistant." }]);
+      const errorMessage = error?.message?.includes("Clé API introuvable") 
+        ? error.message 
+        : "Désolé, une erreur s'est produite lors de la communication avec l'assistant.";
+      setMessages(prev => [...prev, { role: 'model', text: errorMessage }]);
     } finally {
       setIsLoading(false);
     }

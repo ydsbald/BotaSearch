@@ -5,7 +5,7 @@ import { cn } from '../lib/utils';
 
 export function ResultCard({ result, rank, maxScore }: { result: any, rank: number, maxScore: number, key?: any }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(result.family.images?.feuille || result.family.images?.fleur || result.family.images?.fruit || null);
   const [imageLoading, setImageLoading] = useState(false);
   
   const { family: f, score, matchedTraits } = result;
@@ -19,7 +19,7 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
     if (isOpen && !imageUrl && !imageLoading) {
       setImageLoading(true);
       // Try French Wikipedia first, then fallback to English if needed
-      fetch(`https://fr.wikipedia.org/w/api.php?action=query&titles=${f.name}&prop=pageimages&format=json&pithumbsize=400&origin=*`)
+      fetch(`https://fr.wikipedia.org/w/api.php?action=query&titles=${f.name}&prop=pageimages&format=json&pithumbsize=800&origin=*`)
         .then(res => res.json())
         .then(data => {
           const pages = data.query?.pages;
@@ -32,7 +32,7 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
             }
           }
           // Fallback to English Wikipedia
-          return fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${f.name}&prop=pageimages&format=json&pithumbsize=400&origin=*`)
+          return fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${f.name}&prop=pageimages&format=json&pithumbsize=800&origin=*`)
             .then(res => res.json())
             .then(dataEn => {
               const pagesEn = dataEn.query?.pages;
@@ -192,34 +192,40 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
                 ]} />
               </div>
 
-              <div className="flex gap-3 py-4 mt-4 border-t border-border/50">
-                {imageUrl ? (
-                  <div className="relative w-32 h-32 shrink-0 rounded-lg overflow-hidden border border-border group">
-                    <img 
-                      src={imageUrl} 
-                      alt={`Photo de ${f.name}`} 
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2">
-                      <span className="text-[10px] text-white font-mono tracking-widest uppercase truncate">{f.name}</span>
+              <div className="flex flex-col gap-3 py-4 mt-4 border-t border-border/50">
+                {/* Main Image */}
+                <div className="w-full h-48 sm:h-64 relative rounded-xl overflow-hidden border border-border group bg-bg/50">
+                  {imageUrl ? (
+                    <>
+                      <img 
+                        src={imageUrl} 
+                        alt={`Photo de ${f.name}`} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-300" />
+                      <div className="absolute bottom-0 left-0 p-4 sm:p-6">
+                        <span className="text-[10px] sm:text-xs text-green3 font-mono tracking-widest uppercase mb-1 sm:mb-2 flex items-center gap-2">
+                          <ImageIcon className="w-3 h-3 sm:w-4 sm:h-4" /> Photo Représentative
+                        </span>
+                        <span className="text-xl sm:text-3xl text-white font-serif italic tracking-wide drop-shadow-lg">{f.name}</span>
+                      </div>
+                    </>
+                  ) : imageLoading ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-muted">
+                      <div className="w-6 h-6 border-2 border-green2/30 border-t-green2 rounded-full animate-spin" />
+                      <span className="text-xs tracking-widest uppercase">Recherche d'image...</span>
                     </div>
-                  </div>
-                ) : (
-                  <>
-                    {imageLoading ? (
-                      <div className="w-32 h-32 shrink-0 bg-bg/50 border border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-2 text-[10px] text-muted">
-                        <div className="w-5 h-5 border-2 border-green2/30 border-t-green2 rounded-full animate-spin" />
-                        <span className="tracking-widest uppercase">Recherche...</span>
-                      </div>
-                    ) : (
-                      <div className="w-32 shrink-0 flex">
-                        <ImagePlaceholder icon={<ImageIcon className="w-5 h-5" />} label="Photo" />
-                      </div>
-                    )}
-                  </>
-                )}
-                <div className="flex gap-3 flex-1">
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-muted hover:text-green2 transition-colors">
+                      <ImageIcon className="w-8 h-8 opacity-50" />
+                      <span className="text-xs tracking-widest uppercase">Aucune photo disponible</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Trait Images */}
+                <div className="grid grid-cols-3 gap-3">
                   {f.images?.feuille ? (
                     <TraitImage url={f.images.feuille} icon={<Leaf className="w-4 h-4" />} label="Feuille" />
                   ) : (
@@ -280,9 +286,10 @@ function TraitGroup({ title, icon, traits }: { title: string, icon: React.ReactN
 
 function ImagePlaceholder({ icon, label }: { icon: React.ReactNode, label: string }) {
   return (
-    <div className="flex-1 h-32 bg-bg/50 border border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-2 text-[10px] text-muted cursor-pointer hover:border-green/50 hover:text-green2 hover:bg-green/5 transition-all duration-300 group">
+    <div className="w-full h-24 sm:h-32 bg-bg/50 border border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2 text-[10px] text-muted cursor-pointer hover:border-green/50 hover:text-green2 hover:bg-green/5 transition-all duration-300 group">
       <div className="group-hover:scale-110 transition-transform duration-300">{icon}</div>
-      <span className="tracking-widest uppercase">{label}</span>
+      <span className="tracking-widest uppercase hidden sm:block">{label}</span>
+      <span className="tracking-widest uppercase sm:hidden">{label.slice(0,3)}</span>
     </div>
   );
 }
@@ -295,17 +302,17 @@ function TraitImage({ url, icon, label }: { url: string, icon: React.ReactNode, 
   }
 
   return (
-    <div className="flex-1 h-32 relative rounded-lg overflow-hidden border border-border group bg-bg/50">
+    <div className="w-full h-24 sm:h-32 relative rounded-xl overflow-hidden border border-border group bg-bg/50">
       <img 
         src={url} 
         alt={label} 
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         onError={() => setError(true)}
         referrerPolicy="no-referrer"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2">
-        <span className="text-[10px] text-white font-mono tracking-widest uppercase flex items-center gap-1">
-          {icon} {label}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2 sm:p-3">
+        <span className="text-[9px] sm:text-[10px] text-white font-mono tracking-widest uppercase flex items-center gap-1.5 drop-shadow-md">
+          {icon} <span className="hidden sm:inline">{label}</span>
         </span>
       </div>
     </div>

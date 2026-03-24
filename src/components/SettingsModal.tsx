@@ -15,7 +15,7 @@ export function SettingsModal({ isOpen, onClose, selectedModel, onModelChange }:
     if (w.aistudio && w.aistudio.openSelectKey) {
       await w.aistudio.openSelectKey();
     } else {
-      alert("La sélection de clé API n'est pas disponible dans cet environnement.");
+      alert("La sélection de clé API via l'interface n'est pas disponible en local.\n\nPour utiliser l'application localement, veuillez créer un fichier .env à la racine du projet et y ajouter votre clé :\nVITE_GEMINI_API_KEY=votre_cle_api");
     }
   };
 
