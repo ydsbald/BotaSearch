@@ -32,7 +32,7 @@ const ArrayInput = ({ label, value, onChange }: { label: string, value: any, onC
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder="Séparé par des virgules..."
-        className="w-full bg-black/40 border border-white/10 rounded-md p-2 text-[12px] text-text2 focus:border-amber/50 focus:outline-none"
+        className="w-full bg-bg/50 border border-border rounded-md p-2 text-[12px] text-text2 focus:border-amber/50 focus:outline-none"
       />
     </div>
   );
@@ -45,7 +45,7 @@ const TextInput = ({ label, value, onChange }: { label: string, value: any, onCh
       type="text"
       value={value || ''}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full bg-black/40 border border-white/10 rounded-md p-2 text-[12px] text-text2 focus:border-amber/50 focus:outline-none"
+      className="w-full bg-bg/50 border border-border rounded-md p-2 text-[12px] text-text2 focus:border-amber/50 focus:outline-none"
     />
   </div>
 );
@@ -56,7 +56,7 @@ const BoolInput = ({ label, checked, onChange }: { label: string, checked: any, 
       type="checkbox"
       checked={!!checked}
       onChange={(e) => onChange(e.target.checked)}
-      className="rounded border-white/10 bg-black/40 text-amber2 focus:ring-amber/50 w-4 h-4"
+      className="rounded border-border bg-bg/50 text-amber2 focus:ring-amber/50 w-4 h-4"
     />
     {label}
   </label>
@@ -160,8 +160,8 @@ export function DataEditorForm() {
   return (
     <div className="flex h-full overflow-hidden">
       {/* Sidebar */}
-      <div className="w-1/3 border-r border-white/10 flex flex-col bg-black/20">
-        <div className="p-3 border-b border-white/10 flex flex-col gap-3">
+      <div className="w-1/3 border-r border-border flex flex-col bg-bg3/50">
+        <div className="p-3 border-b border-border flex flex-col gap-3">
           <div className="flex gap-2">
             <button onClick={handleReset} className="flex-1 px-2 py-1.5 rounded text-[11px] border border-red/30 text-red hover:bg-red/10 flex items-center justify-center gap-1 transition-colors">
               <RotateCcw className="w-3 h-3" /> Reset
@@ -181,7 +181,7 @@ export function DataEditorForm() {
               placeholder="Rechercher..." 
               value={searchTerm} 
               onChange={e => setSearchTerm(e.target.value)} 
-              className="w-full bg-black/40 border border-white/10 rounded p-1.5 pl-7 text-[12px] text-text2 focus:outline-none focus:border-amber/50" 
+              className="w-full bg-bg/50 border border-border rounded p-1.5 pl-7 text-[12px] text-text2 focus:outline-none focus:border-amber/50" 
             />
           </div>
         </div>
@@ -192,7 +192,7 @@ export function DataEditorForm() {
               onClick={() => setSelectedIndex(i)} 
               className={cn(
                 "w-full text-left px-3 py-2 rounded text-[12px] truncate transition-colors", 
-                selectedIndex === i ? "bg-amber/20 text-amber2 border border-amber/20" : "hover:bg-white/5 text-text2 border border-transparent"
+                selectedIndex === i ? "bg-amber/20 text-amber2 border border-amber/20" : "hover:bg-text/5 text-text2 border border-transparent"
               )}
             >
               {f.name || 'Nouvelle Famille'}
@@ -206,10 +206,10 @@ export function DataEditorForm() {
       </div>
 
       {/* Form Area */}
-      <div className="flex-1 overflow-y-auto p-5 custom-scrollbar bg-black/10">
+      <div className="flex-1 overflow-y-auto p-5 custom-scrollbar bg-bg/30">
         {selectedFamily ? (
           <div className="space-y-6 max-w-2xl mx-auto pb-10">
-            <div className="flex justify-between items-center border-b border-white/10 pb-3 sticky top-0 bg-bg2/90 backdrop-blur-md z-10 pt-2">
+            <div className="flex justify-between items-center border-b border-border pb-3 sticky top-0 bg-bg2/90 backdrop-blur-md z-10 pt-2">
               <h3 className="text-amber2 font-bold text-[16px] flex items-center gap-2">
                 Éditer : {selectedFamily.name || 'Nouvelle Famille'}
               </h3>
@@ -227,7 +227,7 @@ export function DataEditorForm() {
                 <select 
                   value={selectedFamily.classe || 'dicot'} 
                   onChange={(e) => updateFamily(selectedIndex!, ['classe'], e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-md p-2 text-[12px] text-text2 focus:border-amber/50 focus:outline-none"
+                  className="w-full bg-bg/50 border border-border rounded-md p-2 text-[12px] text-text2 focus:border-amber/50 focus:outline-none"
                 >
                   <option value="dicot">Dicotylédone</option>
                   <option value="monocot">Monocotylédone</option>
@@ -235,16 +235,16 @@ export function DataEditorForm() {
               </div>
             </div>
 
-            <div className="space-y-4 bg-black/20 p-4 rounded-xl border border-white/5">
-              <h4 className="text-[13px] font-bold text-green2 border-b border-white/10 pb-2">Général</h4>
+            <div className="space-y-4 bg-bg3/50 p-4 rounded-xl border border-border/50">
+              <h4 className="text-[13px] font-bold text-green2 border-b border-border pb-2">Général</h4>
               <ArrayInput label="Port (ex: arbre, liane)" value={selectedFamily.port} onChange={(v) => updateFamily(selectedIndex!, ['port'], v)} />
               <ArrayInput label="Habitat" value={selectedFamily.habitat} onChange={(v) => updateFamily(selectedIndex!, ['habitat'], v)} />
               <ArrayInput label="Genres Endémiques" value={selectedFamily.endemic_genera} onChange={(v) => updateFamily(selectedIndex!, ['endemic_genera'], v)} />
               <ArrayInput label="Mots-clés (Score Traits)" value={selectedFamily.score_traits} onChange={(v) => updateFamily(selectedIndex!, ['score_traits'], v)} />
             </div>
 
-            <div className="space-y-4 bg-black/20 p-4 rounded-xl border border-white/5">
-              <h4 className="text-[13px] font-bold text-green2 border-b border-white/10 pb-2">Tige</h4>
+            <div className="space-y-4 bg-bg3/50 p-4 rounded-xl border border-border/50">
+              <h4 className="text-[13px] font-bold text-green2 border-b border-border pb-2">Tige</h4>
               <div className="grid grid-cols-2 gap-4">
                 <TextInput label="Texture" value={tige.texture} onChange={(v) => updateFamily(selectedIndex!, ['tige', 'texture'], v)} />
                 <TextInput label="Forme" value={tige.forme} onChange={(v) => updateFamily(selectedIndex!, ['tige', 'forme'], v)} />
@@ -258,8 +258,8 @@ export function DataEditorForm() {
               </div>
             </div>
 
-            <div className="space-y-4 bg-black/20 p-4 rounded-xl border border-white/5">
-              <h4 className="text-[13px] font-bold text-green2 border-b border-white/10 pb-2">Feuilles</h4>
+            <div className="space-y-4 bg-bg3/50 p-4 rounded-xl border border-border/50">
+              <h4 className="text-[13px] font-bold text-green2 border-b border-border pb-2">Feuilles</h4>
               <div className="grid grid-cols-2 gap-4">
                 <ArrayInput label="Type" value={feuilles.type} onChange={(v) => updateFamily(selectedIndex!, ['feuilles', 'type'], v)} />
                 <ArrayInput label="Disposition" value={feuilles.disposition} onChange={(v) => updateFamily(selectedIndex!, ['feuilles', 'disposition'], v)} />
@@ -274,8 +274,8 @@ export function DataEditorForm() {
               </div>
             </div>
 
-            <div className="space-y-4 bg-black/20 p-4 rounded-xl border border-white/5">
-              <h4 className="text-[13px] font-bold text-green2 border-b border-white/10 pb-2">Fleurs</h4>
+            <div className="space-y-4 bg-bg3/50 p-4 rounded-xl border border-border/50">
+              <h4 className="text-[13px] font-bold text-green2 border-b border-border pb-2">Fleurs</h4>
               <div className="grid grid-cols-2 gap-4">
                 <TextInput label="Symétrie" value={fleurs.symetrie} onChange={(v) => updateFamily(selectedIndex!, ['fleurs', 'symetrie'], v)} />
                 <TextInput label="Pièces" value={fleurs.pieces} onChange={(v) => updateFamily(selectedIndex!, ['fleurs', 'pieces'], v)} />
@@ -284,16 +284,16 @@ export function DataEditorForm() {
               </div>
             </div>
 
-            <div className="space-y-4 bg-black/20 p-4 rounded-xl border border-white/5">
-              <h4 className="text-[13px] font-bold text-green2 border-b border-white/10 pb-2">Fruits</h4>
+            <div className="space-y-4 bg-bg3/50 p-4 rounded-xl border border-border/50">
+              <h4 className="text-[13px] font-bold text-green2 border-b border-border pb-2">Fruits</h4>
               <div className="grid grid-cols-2 gap-4">
                 <TextInput label="Type" value={fruits.type} onChange={(v) => updateFamily(selectedIndex!, ['fruits', 'type'], v)} />
                 <TextInput label="Description" value={fruits.description} onChange={(v) => updateFamily(selectedIndex!, ['fruits', 'description'], v)} />
               </div>
             </div>
 
-            <div className="space-y-4 bg-black/20 p-4 rounded-xl border border-white/5">
-              <h4 className="text-[13px] font-bold text-green2 border-b border-white/10 pb-2">Photos (URLs)</h4>
+            <div className="space-y-4 bg-bg3/50 p-4 rounded-xl border border-border/50">
+              <h4 className="text-[13px] font-bold text-green2 border-b border-border pb-2">Photos (URLs)</h4>
               <div className="grid grid-cols-1 gap-4">
                 <TextInput label="URL Photo Feuille" value={selectedFamily.images?.feuille || ''} onChange={(v) => updateFamily(selectedIndex!, ['images', 'feuille'], v)} />
                 <TextInput label="URL Photo Fleur" value={selectedFamily.images?.fleur || ''} onChange={(v) => updateFamily(selectedIndex!, ['images', 'fleur'], v)} />
@@ -304,7 +304,7 @@ export function DataEditorForm() {
           </div>
         ) : (
           <div className="h-full flex flex-col items-center justify-center text-muted2 text-[13px] gap-4">
-            <Database className="w-12 h-12 text-white/5" />
+            <Database className="w-12 h-12 text-border" />
             <p>Sélectionnez une famille dans la liste pour l'éditer,<br/>ou ajoutez-en une nouvelle.</p>
           </div>
         )}

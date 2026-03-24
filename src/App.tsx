@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Menu, Search, Sparkles } from 'lucide-react';
+import { X, Menu, Search, Sparkles, Sun, Moon, Settings } from 'lucide-react';
 import { search, getSuggestions, tokenize } from './search';
 import { ResultCard } from './components/ResultCard';
 import { Chatbot } from './components/Chatbot';
+import { SettingsModal } from './components/SettingsModal';
 import { cn } from './lib/utils';
 
 const FILTERS = [
@@ -39,6 +40,27 @@ export default function App() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dbVersion, setDbVersion] = useState(0);
+  const [isLightMode, setIsLightMode] = useState(() => {
+    return localStorage.getItem('botasearch_theme') === 'light';
+  });
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(() => {
+    return localStorage.getItem('botasearch_model') || 'gemini-3-flash-preview';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('botasearch_model', selectedModel);
+  }, [selectedModel]);
+
+  useEffect(() => {
+    if (isLightMode) {
+      document.documentElement.classList.add('light');
+      localStorage.setItem('botasearch_theme', 'light');
+    } else {
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('botasearch_theme', 'dark');
+    }
+  }, [isLightMode]);
 
   useEffect(() => {
     const handleDbUpdate = () => setDbVersion(v => v + 1);
@@ -65,8 +87,8 @@ export default function App() {
     <div className="flex flex-col h-screen overflow-hidden bg-bg text-text font-mono text-[13px] relative">
       {/* ATMOSPHERIC BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vh] rounded-full bg-green/10 blur-[120px] mix-blend-screen" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vh] rounded-full bg-amber/10 blur-[120px] mix-blend-screen" />
+        <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vh] rounded-full bg-green/10 blur-[120px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vh] rounded-full bg-amber/10 blur-[120px]" />
       </div>
 
       {/* HEADER */}
@@ -85,8 +107,24 @@ export default function App() {
         <div className="hidden sm:block font-serif italic text-[15px] text-muted2 tracking-wide">
           Flore vasculaire de Madagascar
         </div>
-        <div className="ml-auto text-[10px] text-muted tracking-widest hidden sm:block uppercase">
-          v1.0 · ≥80 familles · Schatz-inspired
+        <div className="ml-auto flex items-center gap-4">
+          <div className="text-[10px] text-muted tracking-widest hidden sm:block uppercase">
+            v1.0 · ≥80 familles · Schatz-inspired
+          </div>
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            className="text-muted hover:text-green2 transition-colors p-1.5 rounded-full hover:bg-green/10"
+            title="Paramètres"
+          >
+            <Settings className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setIsLightMode(!isLightMode)}
+            className="text-muted hover:text-green2 transition-colors p-1.5 rounded-full hover:bg-green/10"
+            title="Basculer le thème"
+          >
+            {isLightMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+          </button>
         </div>
       </header>
 
@@ -105,7 +143,7 @@ export default function App() {
             spellCheck="false"
           />
           {query && (
-            <button onClick={() => setQuery('')} className="text-muted hover:text-text transition-colors p-1 rounded-full hover:bg-white/5">
+            <button onClick={() => setQuery('')} className="text-muted hover:text-text transition-colors p-1 rounded-full hover:bg-text/5">
               <X className="w-4 h-4" />
             </button>
           )}
@@ -201,7 +239,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm z-20 md:hidden"
+            className="absolute inset-0 bg-bg/60 backdrop-blur-sm z-20 md:hidden"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
@@ -277,7 +315,15 @@ export default function App() {
           </div>
         </div>
       </div>
-      <Chatbot />
+      <Chatbot selectedModel={selectedModel} />
+
+      {/* SETTINGS MODAL */}
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
     </div>
   );
 }

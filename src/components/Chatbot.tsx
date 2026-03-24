@@ -7,10 +7,7 @@ import remarkGfm from 'remark-gfm';
 import { cn } from '../lib/utils';
 import { DataEditorForm } from './DataEditorForm';
 
-// Initialize Gemini API
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-export function Chatbot() {
+export function Chatbot({ selectedModel = 'gemini-3-flash-preview' }: { selectedModel?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'chat' | 'data'>('chat');
   const [messages, setMessages] = useState<{ role: 'user' | 'model', text: string }[]>([
@@ -19,22 +16,6 @@ export function Chatbot() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
-  // Store the chat instance
-  const chatRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (!chatRef.current) {
-      chatRef.current = ai.chats.create({
-        model: 'gemini-3-flash-preview',
-        config: {
-          systemInstruction: 'Vous êtes un expert en botanique spécialisé dans la flore de Madagascar. Vous aidez les utilisateurs à identifier des plantes, comprendre des termes botaniques, et vous pouvez chercher sur le web pour fournir des informations à jour ou des descriptions détaillées.',
-          tools: [{ googleSearch: {} }],
-          toolConfig: { includeServerSideToolInvocations: true }
-        }
-      });
-    }
-  }, []);
 
   useEffect(() => {
     if (messagesEndRef.current && activeTab === 'chat') {
@@ -51,8 +32,27 @@ export function Chatbot() {
     setIsLoading(true);
 
     try {
-      const response = await chatRef.current.sendMessage({ message: userMsg });
-      setMessages(prev => [...prev, { role: 'model', text: response.text }]);
+      const currentAi = new GoogleGenAI({ apiKey: (process.env.API_KEY || process.env.GEMINI_API_KEY) as string });
+      
+      const contents = messages
+        .filter((m, i) => !(i === 0 && m.role === 'model')) // Remove initial greeting
+        .map(m => ({
+          role: m.role,
+          parts: [{ text: m.text }]
+        }));
+      contents.push({ role: 'user', parts: [{ text: userMsg }] });
+
+      const response = await currentAi.models.generateContent({
+        model: selectedModel,
+        contents: contents,
+        config: {
+          systemInstruction: 'Vous êtes un expert en botanique spécialisé dans la flore de Madagascar. Vous aidez les utilisateurs à identifier des plantes, comprendre des termes botaniques, et vous pouvez chercher sur le web pour fournir des informations à jour ou des descriptions détaillées.',
+          tools: [{ googleSearch: {} }],
+          toolConfig: { includeServerSideToolInvocations: true }
+        }
+      });
+      
+      setMessages(prev => [...prev, { role: 'model', text: response.text || '' }]);
     } catch (error) {
       console.error("Chat error:", error);
       setMessages(prev => [...prev, { role: 'model', text: "Désolé, une erreur s'est produite lors de la communication avec l'assistant." }]);
@@ -89,7 +89,7 @@ export function Chatbot() {
             className="fixed bottom-6 right-6 w-[850px] h-[650px] max-w-[90vw] max-h-[90vh] bg-bg2 border border-border2 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden glass-panel"
           >
             {/* Header */}
-            <div className="px-4 py-3 border-b border-border/50 bg-black/20 flex items-center justify-between">
+            <div className="px-4 py-3 border-b border-border/50 bg-bg3/50 flex items-center justify-between">
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
                   <Bot className="w-5 h-5 text-green2" />
@@ -102,7 +102,7 @@ export function Chatbot() {
                     onClick={() => setActiveTab('chat')}
                     className={cn(
                       "px-3 py-1.5 rounded-md text-[11px] font-mono tracking-wider uppercase transition-colors flex items-center gap-2",
-                      activeTab === 'chat' ? "bg-green/20 text-green2 border border-green/30" : "text-muted hover:text-text hover:bg-white/5"
+                      activeTab === 'chat' ? "bg-green/20 text-green2 border border-green/30" : "text-muted hover:text-text hover:bg-text/5"
                     )}
                   >
                     <MessageSquare className="w-3 h-3" /> Chat
@@ -111,7 +111,7 @@ export function Chatbot() {
                     onClick={() => setActiveTab('data')}
                     className={cn(
                       "px-3 py-1.5 rounded-md text-[11px] font-mono tracking-wider uppercase transition-colors flex items-center gap-2",
-                      activeTab === 'data' ? "bg-amber/20 text-amber2 border border-amber/30" : "text-muted hover:text-text hover:bg-white/5"
+                      activeTab === 'data' ? "bg-amber/20 text-amber2 border border-amber/30" : "text-muted hover:text-text hover:bg-text/5"
                     )}
                   >
                     <Database className="w-3 h-3" /> Éditeur de Données
@@ -120,7 +120,7 @@ export function Chatbot() {
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="text-muted hover:text-text transition-colors p-1 rounded-md hover:bg-white/5"
+                className="text-muted hover:text-text transition-colors p-1 rounded-md hover:bg-text/5"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -145,7 +145,7 @@ export function Chatbot() {
                           "px-3 py-2 rounded-xl text-[13px] leading-relaxed max-w-[80%] markdown-body",
                           msg.role === 'user' 
                             ? "bg-amber/10 border border-amber/20 text-text rounded-tr-none" 
-                            : "bg-black/30 border border-white/5 text-text2 rounded-tl-none"
+                            : "bg-bg3/50 border border-border text-text2 rounded-tl-none"
                         )}>
                           <ReactMarkdown remarkPlugins={[remarkGfm]}>
                             {msg.text}
@@ -158,7 +158,7 @@ export function Chatbot() {
                         <div className="w-8 h-8 rounded-full bg-green/20 text-green2 flex items-center justify-center shrink-0">
                           <Bot className="w-4 h-4" />
                         </div>
-                        <div className="px-4 py-3 rounded-xl bg-black/30 border border-white/5 rounded-tl-none flex items-center gap-2">
+                        <div className="px-4 py-3 rounded-xl bg-bg3/50 border border-border rounded-tl-none flex items-center gap-2">
                           <Loader2 className="w-4 h-4 text-green2 animate-spin" />
                           <span className="text-[11px] text-muted italic">Recherche en cours...</span>
                         </div>
@@ -168,7 +168,7 @@ export function Chatbot() {
                   </div>
 
                   {/* Input */}
-                  <div className="p-3 border-t border-border/50 bg-black/20">
+                  <div className="p-3 border-t border-border/50 bg-bg3/50">
                     <div className="relative flex items-center">
                       <input
                         type="text"

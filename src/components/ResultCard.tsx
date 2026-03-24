@@ -82,7 +82,7 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
           <div className="flex items-baseline gap-3">
             <div className={cn(
               "font-serif italic text-2xl leading-none font-light tracking-wide", 
-              isTop ? "text-green3 text-glow" : "text-text group-hover:text-white transition-colors"
+              isTop ? "text-green3 text-glow" : "text-text group-hover:text-green2 transition-colors"
             )}>
               {f.name}
             </div>
@@ -93,7 +93,7 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
         <div className="hidden md:flex gap-2 items-center flex-wrap justify-end">
           <span className={cn(
             "px-2.5 py-0.5 rounded-full text-[10px] tracking-widest border uppercase font-bold",
-            f.classe === 'monocot' ? "text-[#7ab8c8] border-[#2a4850] bg-[#7ab8c8]/10" : "text-[#b8a87a] border-[#504028] bg-[#b8a87a]/10"
+            f.classe === 'monocot' ? "text-green3 border-green3/30 bg-green3/10" : "text-amber2 border-amber2/30 bg-amber2/10"
           )}>
             {f.classe}
           </span>
@@ -102,13 +102,13 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
               {p}
             </span>
           ))}
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] tracking-widest border text-[#8ab88a] border-[#2a4028] bg-[#8ab88a]/10 uppercase">
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] tracking-widest border text-green2 border-green2/30 bg-green2/10 uppercase">
             {f.habitat[0]}
           </span>
         </div>
         
-        <div className={cn("p-1.5 rounded-full transition-colors duration-300", isOpen ? "bg-white/10" : "bg-transparent group-hover:bg-white/5")}>
-          <ChevronRight className={cn("w-5 h-5 text-muted transition-transform duration-300", isOpen && "rotate-90 text-white")} />
+        <div className={cn("p-1.5 rounded-full transition-colors duration-300", isOpen ? "bg-text/10" : "bg-transparent group-hover:bg-text/5")}>
+          <ChevronRight className={cn("w-5 h-5 text-muted transition-transform duration-300", isOpen && "rotate-90 text-text")} />
         </div>
       </div>
 
@@ -127,14 +127,14 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
           <span className={scoreColor}>Score [{score.toFixed(0)}]</span>
           <span>{pct}% Match</span>
         </div>
-        <div className="h-1 bg-black/50 rounded-full overflow-hidden border border-white/5">
+        <div className="h-1 bg-bg/50 rounded-full overflow-hidden border border-border/50">
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${pct}%` }}
             transition={{ duration: 0.8, ease: "easeOut", delay: rank * 0.1 }}
             className={cn("h-full rounded-full bg-gradient-to-r relative", scoreBg)}
           >
-            <div className="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]" style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)' }} />
+            <div className="absolute inset-0 bg-text/20 w-full h-full animate-[shimmer_2s_infinite]" style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)' }} />
           </motion.div>
         </div>
       </div>
@@ -146,18 +146,18 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="overflow-hidden border-t border-border/50 bg-black/20"
+            className="overflow-hidden border-t border-border/50 bg-bg3/50"
           >
             <div className="p-5">
               {/* Mobile Badges (only show if hidden on desktop) */}
               <div className="flex md:hidden gap-2 items-center flex-wrap mb-4">
                 <span className={cn(
                   "px-2.5 py-0.5 rounded-full text-[10px] tracking-widest border uppercase font-bold",
-                  f.classe === 'monocot' ? "text-[#7ab8c8] border-[#2a4850] bg-[#7ab8c8]/10" : "text-[#b8a87a] border-[#504028] bg-[#b8a87a]/10"
+                  f.classe === 'monocot' ? "text-green3 border-green3/30 bg-green3/10" : "text-amber2 border-amber2/30 bg-amber2/10"
                 )}>
                   {f.classe}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] tracking-widest border text-[#8ab88a] border-[#2a4028] bg-[#8ab88a]/10 uppercase">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] tracking-widest border text-green2 border-green2/30 bg-green2/10 uppercase">
                   {f.habitat[0]}
                 </span>
               </div>
@@ -194,7 +194,7 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
 
               <div className="flex gap-3 py-4 mt-4 border-t border-border/50">
                 {imageUrl ? (
-                  <div className="relative w-32 h-32 shrink-0 rounded-lg overflow-hidden border border-white/10 group">
+                  <div className="relative w-32 h-32 shrink-0 rounded-lg overflow-hidden border border-border group">
                     <img 
                       src={imageUrl} 
                       alt={`Photo de ${f.name}`} 
@@ -208,7 +208,7 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
                 ) : (
                   <>
                     {imageLoading ? (
-                      <div className="w-32 h-32 shrink-0 bg-black/40 border border-dashed border-white/10 rounded-lg flex flex-col items-center justify-center gap-2 text-[10px] text-muted">
+                      <div className="w-32 h-32 shrink-0 bg-bg/50 border border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-2 text-[10px] text-muted">
                         <div className="w-5 h-5 border-2 border-green2/30 border-t-green2 rounded-full animate-spin" />
                         <span className="tracking-widest uppercase">Recherche...</span>
                       </div>
@@ -245,7 +245,7 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
 
               <div className="flex gap-2 flex-wrap pt-4">
                 {f.habitat.map((h: string) => (
-                  <span key={h} className="text-[10px] text-muted2 border border-border/50 bg-black/20 px-3 py-1 rounded-full uppercase tracking-widest">
+                  <span key={h} className="text-[10px] text-muted2 border border-border/50 bg-bg3/50 px-3 py-1 rounded-full uppercase tracking-widest">
                     📍 {h}
                   </span>
                 ))}
@@ -260,7 +260,7 @@ export function ResultCard({ result, rank, maxScore }: { result: any, rank: numb
 
 function TraitGroup({ title, icon, traits }: { title: string, icon: React.ReactNode, traits: any[] }) {
   return (
-    <div className="bg-black/40 border border-white/5 p-4 rounded-lg hover:border-white/10 transition-colors">
+    <div className="bg-bg/50 border border-border/50 p-4 rounded-lg hover:border-border transition-colors">
       <div className="text-[10px] tracking-[0.2em] text-amber uppercase mb-3 flex items-center gap-2 font-bold">
         {icon} {title}
       </div>
@@ -280,7 +280,7 @@ function TraitGroup({ title, icon, traits }: { title: string, icon: React.ReactN
 
 function ImagePlaceholder({ icon, label }: { icon: React.ReactNode, label: string }) {
   return (
-    <div className="flex-1 h-32 bg-black/40 border border-dashed border-white/10 rounded-lg flex flex-col items-center justify-center gap-2 text-[10px] text-muted cursor-pointer hover:border-green/50 hover:text-green2 hover:bg-green/5 transition-all duration-300 group">
+    <div className="flex-1 h-32 bg-bg/50 border border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-2 text-[10px] text-muted cursor-pointer hover:border-green/50 hover:text-green2 hover:bg-green/5 transition-all duration-300 group">
       <div className="group-hover:scale-110 transition-transform duration-300">{icon}</div>
       <span className="tracking-widest uppercase">{label}</span>
     </div>
@@ -295,7 +295,7 @@ function TraitImage({ url, icon, label }: { url: string, icon: React.ReactNode, 
   }
 
   return (
-    <div className="flex-1 h-32 relative rounded-lg overflow-hidden border border-white/10 group bg-black/40">
+    <div className="flex-1 h-32 relative rounded-lg overflow-hidden border border-border group bg-bg/50">
       <img 
         src={url} 
         alt={label} 

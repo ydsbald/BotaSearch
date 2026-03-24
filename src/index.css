@@ -6,43 +6,62 @@
   --font-serif: "Crimson Pro", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --color-bg: #050604;
-  --color-bg2: rgba(15, 18, 12, 0.6);
-  --color-bg3: rgba(25, 30, 20, 0.8);
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border2: rgba(126, 179, 86, 0.2);
-  --color-green: #7eb356;
-  --color-green2: #a8d470;
-  --color-green3: #c8e89a;
-  --color-amber: #c4922a;
-  --color-amber2: #e8b84a;
-  --color-red: #c45a3a;
-  --color-muted: #5a6650;
-  --color-muted2: #7a8870;
-  --color-text: #e2e8db;
-  --color-text2: #a8b498;
+  --color-bg: var(--theme-bg);
+  --color-bg2: var(--theme-bg2);
+  --color-bg3: var(--theme-bg3);
+  --color-border: var(--theme-border);
+  --color-border2: var(--theme-border2);
+  --color-green: var(--theme-green);
+  --color-green2: var(--theme-green2);
+  --color-green3: var(--theme-green3);
+  --color-amber: var(--theme-amber);
+  --color-amber2: var(--theme-amber2);
+  --color-red: var(--theme-red);
+  --color-muted: var(--theme-muted);
+  --color-muted2: var(--theme-muted2);
+  --color-text: var(--theme-text);
+  --color-text2: var(--theme-text2);
 }
 
 @layer base {
+  :root {
+    --theme-bg: #050604;
+    --theme-bg2: rgba(15, 18, 12, 0.6);
+    --theme-bg3: rgba(25, 30, 20, 0.8);
+    --theme-border: rgba(255, 255, 255, 0.06);
+    --theme-border2: rgba(126, 179, 86, 0.2);
+    --theme-green: #7eb356;
+    --theme-green2: #a8d470;
+    --theme-green3: #c8e89a;
+    --theme-amber: #c4922a;
+    --theme-amber2: #e8b84a;
+    --theme-red: #c45a3a;
+    --theme-muted: #5a6650;
+    --theme-muted2: #7a8870;
+    --theme-text: #e2e8db;
+    --theme-text2: #a8b498;
+  }
+
+  .light {
+    --theme-bg: #f6f8f4;
+    --theme-bg2: rgba(255, 255, 255, 0.7);
+    --theme-bg3: rgba(240, 244, 238, 0.9);
+    --theme-border: rgba(0, 0, 0, 0.08);
+    --theme-border2: rgba(126, 179, 86, 0.3);
+    --theme-green: #6a9a42;
+    --theme-green2: #4a7a25;
+    --theme-green3: #2a5010;
+    --theme-amber: #b07d15;
+    --theme-amber2: #906005;
+    --theme-red: #a83a1f;
+    --theme-muted: #8a997a;
+    --theme-muted2: #5a6b4a;
+    --theme-text: #1a2015;
+    --theme-text2: #3a4830;
+  }
+
   body {
     @apply bg-bg text-text font-sans antialiased selection:bg-green/30 selection:text-green3;
-  }
-  
-  /* Atmospheric Scanline effect */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.1) 2px,
-      rgba(0,0,0,0.1) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.7;
   }
 
   /* Custom Scrollbar for a premium feel */
@@ -100,10 +119,10 @@
     @apply text-green2 underline underline-offset-2 hover:text-green3 transition-colors;
   }
   .markdown-body code {
-    @apply bg-black/40 px-1.5 py-0.5 rounded text-amber2 font-mono text-[11px];
+    @apply bg-bg/40 px-1.5 py-0.5 rounded text-amber2 font-mono text-[11px];
   }
   .markdown-body pre {
-    @apply bg-black/60 p-3 rounded-lg overflow-x-auto mb-2 border border-white/10;
+    @apply bg-bg/60 p-3 rounded-lg overflow-x-auto mb-2 border border-border;
   }
   .markdown-body pre code {
     @apply bg-transparent p-0 text-text2;
@@ -121,10 +140,10 @@
     @apply w-full border-collapse mb-2 text-[11px];
   }
   .markdown-body th, .markdown-body td {
-    @apply border border-white/10 px-2 py-1 text-left;
+    @apply border border-border px-2 py-1 text-left;
   }
   .markdown-body th {
-    @apply bg-black/40 font-bold text-green2;
+    @apply bg-bg/40 font-bold text-green2;
   }
 }
 
